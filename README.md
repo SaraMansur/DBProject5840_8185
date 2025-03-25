@@ -1,1 +1,5 @@
-https://github.com/SaraMansur/DBProject5840_8185/blob/main/DBProject/%D7%A9%D7%9C%D7%91%20%D7%90/readme.pdf
+# פרויקט שלי
+
+כאן תוכלו למצוא את הקובץ PDF:
+
+<iframe src="DBProject/שלב א/readme.pdf" width="100%" height="600px"></iframe>

@@ -1,10 +1,7 @@
--- Drop tables in correct order to avoid foreign key constraint errors
-DROP TABLE orderProd;
-DROP TABLE customer;
-DROP TABLE orders;
-DROP TABLE role;
-DROP TABLE department;
-DROP TABLE employee;
-DROP TABLE product;
-
--- Drop
+DROP TABLE IF EXISTS orderProd;
+DROP TABLE IF EXISTS orders;
+DROP TABLE IF EXISTS employee;
+DROP TABLE IF EXISTS product;
+DROP TABLE IF EXISTS customer;
+DROP TABLE IF EXISTS role;
+DROP TABLE IF EXISTS department;

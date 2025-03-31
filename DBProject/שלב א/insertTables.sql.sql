@@ -1,34 +1,41 @@
--- Insert into product
-INSERT INTO product (pId, pName, stock, price, validity) VALUES (1, 'Milk', 50, 5.99, '2025-06-01');
-INSERT INTO product (pId, pName, stock, price, validity) VALUES (2, 'Bread', 30, 3.49, '2025-06-05');
-INSERT INTO product (pId, pName, stock, price, validity) VALUES (3, 'Eggs', 20, 7.99, '2025-06-10');
+-- הוספת מחלקות
+INSERT INTO department (depId, depName, aisleNum) VALUES
+(1, 'Produce', 5),
+(2, 'Dairy', 8),
+(3, 'Bakery', 2);
 
--- Insert into employee
-INSERT INTO employee (eId, eName, ePhone) VALUES (1, 'Alice Johnson', '123456789');
-INSERT INTO employee (eId, eName, ePhone) VALUES (2, 'Bob Smith', '987654321');
-INSERT INTO employee (eId, eName, ePhone) VALUES (3, 'Charlie Brown', '555555555');
+-- הוספת תפקידים
+INSERT INTO role (rId, alias, rStatus) VALUES
+(1, 'Cashier', 'active'),
+(2, 'Manager', 'active'),
+(3, 'Stocker', 'inactive');
 
--- Insert into role
-INSERT INTO role (rId, alias, rStatus, eId) VALUES (1, 'Manager', 'active', 1);
-INSERT INTO role (rId, alias, rStatus, eId) VALUES (2, 'Cashier', 'inactive', 2);
-INSERT INTO role (rId, alias, rStatus, eId) VALUES (3, 'Stocker', 'active', 3);
+-- הוספת לקוחות
+INSERT INTO customer (cId, cName, cPhone) VALUES
+(1, 'Alice', 123456789999),
+(2, 'Bob', 987654321111),
+(3, 'Charlie', 555666777777);
 
--- Insert into orders
-INSERT INTO orders (ordId, ordDate, ordStatus, ordCost) VALUES (1, '2025-03-20', 'ordered', 15.99);
-INSERT INTO orders (ordId, ordDate, ordStatus, ordCost) VALUES (2, '2025-03-18', 'shipped', 27.50);
-INSERT INTO orders (ordId, ordDate, ordStatus, ordCost) VALUES (3, '2025-03-15', 'delivered', 10.75);
+-- הוספת מוצרים
+INSERT INTO product (pId, pName, stock, Price, validity, depId) VALUES
+(11111, 'Apple', 100, 2.5, '2025-12-31', 1),
+(22222, 'Milk', 50, 5.0, '2026-06-15', 2),
+(33333, 'Bread', 30, 3.0, '2026-04-10', 3);
 
--- Insert into customer
-INSERT INTO customer (cId, cName, cPhone, ordId) VALUES (1, 'David Miller', '111222333', 1);
-INSERT INTO customer (cId, cName, cPhone, ordId) VALUES (2, 'Sarah White', '444555666', 2);
-INSERT INTO customer (cId, cName, cPhone, ordId) VALUES (3, 'James Brown', '777888999', 3);
+-- הוספת עובדים
+INSERT INTO employee (eId, eName, ePhone, depId, rId) VALUES
+(1, 'David', 111222333333, 1, 1),
+(2, 'Emma', 444555666666, 2, 2),
+(3, 'Frank', 777888999999, 3, 3);
 
--- Insert into orderProd
-INSERT INTO orderProd (amount, pId, ordId) VALUES (2, 1, 1);
-INSERT INTO orderProd (amount, pId, ordId) VALUES (1, 2, 2);
-INSERT INTO orderProd (amount, pId, ordId) VALUES (3, 3, 3);
+-- הוספת הזמנות
+INSERT INTO orders (ordId, ordDate, ordStatus, ordCost, cId) VALUES
+(1, '2024-03-01', 'ordered', 50, 1),
+(2, '2024-03-02', 'shipped', 30, 2),
+(3, '2024-03-03', 'delivered', 75, 3);
 
--- Insert into department
-INSERT INTO department (depId, depName, aisleNum, pId, eId) VALUES (1, 'Dairy', 5, 1, 1);
-INSERT INTO department (depId, depName, aisleNum, pId, eId) VALUES (2, 'Bakery', 3, 2, 2);
-INSERT INTO department (depId, depName, aisleNum, pId, eId) VALUES (3, 'Grocery', 7, 3, 3);
+-- הוספת פריטים להזמנות
+INSERT INTO orderProd (amount, pId, ordId) VALUES
+(2, 11111, 1), -- שני תפוחים בהזמנה 1
+(1, 22222, 2), -- חלב בהזמנה 2
+(3, 33333, 3); -- שלושה לחמים בהזמנה 3

@@ -1,0 +1,11 @@
+--עדכון סטטוס של עובדים במחלקה מסוימת ל-"inactive" אם לא בוצעו הזמנות דרך מחלקתם בחצי השנה האחרונה
+
+UPDATE employee
+SET rId = (SELECT rId FROM role WHERE alias = 'inactive' LIMIT 1)
+WHERE depId NOT IN (
+    SELECT DISTINCT p.depId
+    FROM product p
+    JOIN orderProd op ON p.pId = op.pId
+    JOIN orders o ON op.ordId = o.ordId
+    WHERE o.ordDate >= CURRENT_DATE - INTERVAL '6 months'
+);

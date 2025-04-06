@@ -1,0 +1,7 @@
+--שמות כל המוצרים שנמכרו ביותר מהכמות הממוצעת של כל ההזמנות
+
+SELECT p.pName, SUM(op.amount) AS total_sold
+FROM product p
+JOIN orderProd op ON p.pId = op.pId
+GROUP BY p.pName
+HAVING SUM(op.amount) > (SELECT AVG(amount) FROM orderProd);

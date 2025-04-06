@@ -1,0 +1,7 @@
+--העלאת מחיר כל המוצרים ב-10% אם הם נמכרו מעל 50 פעמים
+
+UPDATE product
+SET price = price * 1.1
+WHERE pId IN (
+    SELECT pId FROM orderProd GROUP BY pId HAVING SUM(amount) > 50
+);

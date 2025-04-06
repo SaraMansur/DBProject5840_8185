@@ -1,0 +1,10 @@
+--מוצא את המחלקות שאין בהן מוצרים בתוקף (validity)
+
+SELECT d.depName
+FROM department d
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM product p
+    WHERE p.depId = d.depId
+    AND p.validity >= CURRENT_DATE
+);

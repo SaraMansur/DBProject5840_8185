@@ -1,0 +1,5 @@
+--מחיקת מוצרים שאין מהם מלאי בכלל ואין הזמנות שלהם
+
+DELETE FROM product
+WHERE stock = 0
+AND pId NOT IN (SELECT DISTINCT pId FROM orderProd);

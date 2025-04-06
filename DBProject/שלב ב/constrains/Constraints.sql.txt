@@ -1,0 +1,10 @@
+
+
+ALTER TABLE employee 
+ADD CONSTRAINT chk_phone CHECK (ePhone >= 100000000000 AND ePhone <= 999999999999);  -- 1. CHECK: טלפון חייב להיות באורך 12 ספרות
+
+ALTER TABLE orders 
+ALTER COLUMN ordDate SET DEFAULT CURRENT_DATE;  -- 2. DEFAULT: אם לא מוזן תאריך הזמנה, ייקבע התאריך הנוכחי
+
+ALTER TABLE product 
+ALTER COLUMN pName SET NOT NULL;  -- 3. NOT NULL: שם המוצר הוא חובה

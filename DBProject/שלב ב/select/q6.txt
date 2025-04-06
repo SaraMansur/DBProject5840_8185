@@ -1,0 +1,12 @@
+--מוצא את שמות העובדים שעובדים במחלקה עם הכי הרבה מוצרים
+
+SELECT e.eName, d.depName
+FROM employee e
+JOIN department d ON e.depId = d.depId
+WHERE d.depId = (
+    SELECT p.depId
+    FROM product p
+    GROUP BY p.depId
+    ORDER BY COUNT(*) DESC
+    LIMIT 1
+);

@@ -1,0 +1,8 @@
+--מציג את שם הלקוח שביצע את ההזמנה היקרה ביותר
+
+SELECT c.cid, c.cName, c.cphone, o.ordCost
+FROM customer c
+JOIN orders o ON c.cId = o.cId
+WHERE o.ordCost = (SELECT MAX(ordCost) FROM orders);
+
+

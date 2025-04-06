@@ -1,0 +1,5 @@
+--עדכון מחיר כל המוצרים שתוקפם פג ל-0 (נחשבים כלא זמינים)
+
+UPDATE product
+SET price = 0
+WHERE validity < CURRENT_DATE;

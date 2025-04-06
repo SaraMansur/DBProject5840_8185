@@ -1,0 +1,7 @@
+--מראה כמה מוצרים יש בכל מחלקה, ומסדר אותם לפי כמות יורדת
+
+SELECT d.depName, COUNT(p.pId) AS total_products
+FROM department d
+JOIN product p ON d.depId = p.depId
+GROUP BY d.depName
+ORDER BY total_products DESC;

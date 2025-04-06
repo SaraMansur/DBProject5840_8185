@@ -1,0 +1,9 @@
+--מציאת המחלקות עם הכי הרבה מכירות
+
+SELECT d.depId, d.depName, SUM(op.amount) AS total_sold
+FROM department d
+JOIN product p ON d.depId = p.depId
+JOIN orderProd op ON p.pId = op.pId
+GROUP BY d.depId, d.depName
+ORDER BY total_sold DESC
+LIMIT 1;

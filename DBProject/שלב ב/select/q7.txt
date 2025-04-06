@@ -1,0 +1,7 @@
+--מחזיר את מספר ההזמנות שבוצעו בכל חודש בשנה הנוכחית
+
+SELECT EXTRACT(MONTH FROM ordDate) AS order_month, COUNT(*) AS total_orders
+FROM orders
+WHERE EXTRACT(YEAR FROM ordDate) = EXTRACT(YEAR FROM CURRENT_DATE)
+GROUP BY order_month
+ORDER BY order_month;

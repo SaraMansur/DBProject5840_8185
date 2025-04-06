@@ -1,0 +1,7 @@
+--הלקוחות שעשו הזמנה בחודש האחרון
+
+SELECT c.cid, c.cName, c.cphone, o.ordDate
+FROM customer c
+JOIN orders o ON c.cId = o.cId
+WHERE EXTRACT(MONTH FROM o.ordDate) = EXTRACT(MONTH FROM CURRENT_DATE)
+AND EXTRACT(YEAR FROM o.ordDate) = EXTRACT(YEAR FROM CURRENT_DATE);

@@ -1,0 +1,7 @@
+--מראה את המחיר הכולל ששולם עבור כל מוצר שהוזמן ביותר מ-10 פעמים
+
+SELECT p.pName, SUM(p.price * op.amount) AS total_revenue
+FROM product p
+JOIN orderProd op ON p.pId = op.pId
+GROUP BY p.pName
+HAVING SUM(op.amount) > 10;

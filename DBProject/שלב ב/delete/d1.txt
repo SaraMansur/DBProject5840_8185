@@ -1,0 +1,4 @@
+--מחיקת כל ההזמנות שבוצעו יותר משנה אחורה
+
+DELETE FROM orders
+WHERE ordDate < CURRENT_DATE - INTERVAL '1 year';

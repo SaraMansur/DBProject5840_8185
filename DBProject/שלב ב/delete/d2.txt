@@ -1,0 +1,4 @@
+--מחיקת לקוחות שלא ביצעו הזמנה מעולם
+
+DELETE FROM customer
+WHERE cId NOT IN (SELECT DISTINCT cId FROM orders);

@@ -1,0 +1,1582 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 17.4 (Debian 17.4-1.pgdg120+2)
+-- Dumped by pg_dump version 17.4
+
+-- Started on 2025-04-06 16:57:09 UTC
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET transaction_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- TOC entry 4 (class 2615 OID 2200)
+-- Name: public; Type: SCHEMA; Schema: -; Owner: pg_database_owner
+--
+
+CREATE SCHEMA public;
+
+
+ALTER SCHEMA public OWNER TO pg_database_owner;
+
+--
+-- TOC entry 3427 (class 0 OID 0)
+-- Dependencies: 4
+-- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: pg_database_owner
+--
+
+COMMENT ON SCHEMA public IS 'standard public schema';
+
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- TOC entry 217 (class 1259 OID 24988)
+-- Name: customer; Type: TABLE; Schema: public; Owner: cotehila
+--
+
+CREATE TABLE public.customer (
+    cid numeric(5,0) NOT NULL,
+    cname character varying(15) NOT NULL,
+    cphone numeric(12,0),
+    CONSTRAINT customer_cphone_check CHECK (((cphone >= ('100000000000'::bigint)::numeric) AND (cphone <= ('999999999999'::bigint)::numeric)))
+);
+
+
+ALTER TABLE public.customer OWNER TO cotehila;
+
+--
+-- TOC entry 218 (class 1259 OID 24992)
+-- Name: department; Type: TABLE; Schema: public; Owner: cotehila
+--
+
+CREATE TABLE public.department (
+    depid numeric(5,0) NOT NULL,
+    depname character varying(30) NOT NULL,
+    aislenum integer NOT NULL,
+    CONSTRAINT department_aislenum_check CHECK ((aislenum > 0))
+);
+
+
+ALTER TABLE public.department OWNER TO cotehila;
+
+--
+-- TOC entry 219 (class 1259 OID 24996)
+-- Name: employee; Type: TABLE; Schema: public; Owner: cotehila
+--
+
+CREATE TABLE public.employee (
+    eid numeric(5,0) NOT NULL,
+    ename character varying(15) NOT NULL,
+    ephone numeric(12,0),
+    depid numeric(5,0) NOT NULL,
+    rid numeric(5,0) NOT NULL,
+    CONSTRAINT chk_phone CHECK (((ephone >= ('100000000000'::bigint)::numeric) AND (ephone <= ('999999999999'::bigint)::numeric))),
+    CONSTRAINT employee_ephone_check CHECK (((ephone >= ('100000000000'::bigint)::numeric) AND (ephone <= ('999999999999'::bigint)::numeric)))
+);
+
+
+ALTER TABLE public.employee OWNER TO cotehila;
+
+--
+-- TOC entry 220 (class 1259 OID 25000)
+-- Name: orderprod; Type: TABLE; Schema: public; Owner: cotehila
+--
+
+CREATE TABLE public.orderprod (
+    amount integer NOT NULL,
+    pid numeric(5,0) NOT NULL,
+    ordid numeric(5,0) NOT NULL,
+    CONSTRAINT orderprod_amount_check CHECK ((amount > 0))
+);
+
+
+ALTER TABLE public.orderprod OWNER TO cotehila;
+
+--
+-- TOC entry 221 (class 1259 OID 25004)
+-- Name: orders; Type: TABLE; Schema: public; Owner: cotehila
+--
+
+CREATE TABLE public.orders (
+    ordid numeric(5,0) NOT NULL,
+    orddate date DEFAULT CURRENT_DATE,
+    ordstatus character varying(10) NOT NULL,
+    ordcost integer NOT NULL,
+    cid numeric(5,0) NOT NULL,
+    CONSTRAINT orders_ordcost_check CHECK ((ordcost >= 0)),
+    CONSTRAINT orders_ordstatus_check CHECK (((ordstatus)::text = ANY (ARRAY[('ordered'::character varying)::text, ('shipped'::character varying)::text, ('delivered'::character varying)::text, ('cancelled'::character varying)::text])))
+);
+
+
+ALTER TABLE public.orders OWNER TO cotehila;
+
+--
+-- TOC entry 222 (class 1259 OID 25010)
+-- Name: product; Type: TABLE; Schema: public; Owner: cotehila
+--
+
+CREATE TABLE public.product (
+    pid numeric(5,0) NOT NULL,
+    pname character varying(30) NOT NULL,
+    stock integer DEFAULT 0,
+    price double precision NOT NULL,
+    validity date,
+    depid numeric(5,0) NOT NULL,
+    CONSTRAINT product_price_check CHECK ((price >= (0)::double precision)),
+    CONSTRAINT product_stock_check CHECK ((stock >= 0))
+);
+
+
+ALTER TABLE public.product OWNER TO cotehila;
+
+--
+-- TOC entry 223 (class 1259 OID 25017)
+-- Name: role; Type: TABLE; Schema: public; Owner: cotehila
+--
+
+CREATE TABLE public.role (
+    rid numeric(5,0) NOT NULL,
+    alias character varying(30) NOT NULL,
+    rstatus character varying(10) DEFAULT 'active'::character varying,
+    CONSTRAINT role_rstatus_check CHECK (((rstatus)::text = ANY (ARRAY[('active'::character varying)::text, ('inactive'::character varying)::text, ('suspended'::character varying)::text])))
+);
+
+
+ALTER TABLE public.role OWNER TO cotehila;
+
+--
+-- TOC entry 3415 (class 0 OID 24988)
+-- Dependencies: 217
+-- Data for Name: customer; Type: TABLE DATA; Schema: public; Owner: cotehila
+--
+
+COPY public.customer (cid, cname, cphone) FROM stdin;
+1	Customer1	806715987455
+2	Customer2	860121600253
+3	Customer3	188597830061
+4	Customer4	134717068926
+5	Customer5	387696126771
+7	Customer7	710407155966
+8	Customer8	842696148500
+9	Customer9	390734286734
+10	Customer10	855340212494
+11	Customer11	130278793711
+12	Customer12	615500487331
+13	Customer13	750696948022
+14	Customer14	380009246089
+15	Customer15	717195166254
+16	Customer16	317864578364
+17	Customer17	759513782515
+19	Customer19	986164875203
+20	Customer20	370062237812
+21	Customer21	764136434115
+23	Customer23	238500925362
+24	Customer24	333257007042
+25	Customer25	939230283759
+26	Customer26	563254684909
+27	Customer27	595109002658
+28	Customer28	919660040356
+29	Customer29	390687175616
+30	Customer30	524899382237
+31	Customer31	611412344902
+32	Customer32	596623338419
+33	Customer33	577919251518
+34	Customer34	149631170435
+35	Customer35	811005174513
+38	Customer38	539227273660
+39	Customer39	252681571137
+40	Customer40	309690815956
+41	Customer41	252027385225
+42	Customer42	401954108807
+45	Customer45	171884161354
+46	Customer46	370387980208
+47	Customer47	155919979538
+48	Customer48	735516822337
+49	Customer49	244681251276
+50	Customer50	588140737596
+51	Customer51	747210520587
+52	Customer52	992322851713
+56	Customer56	589022456303
+58	Customer58	767129026583
+60	Customer60	459705316486
+61	Customer61	683826490301
+62	Customer62	481160267532
+63	Customer63	979373821777
+64	Customer64	715408207822
+65	Customer65	372764042471
+66	Customer66	396499220032
+68	Customer68	248402053451
+69	Customer69	912476247276
+70	Customer70	861454351651
+72	Customer72	309398100519
+73	Customer73	348422774026
+75	Customer75	650349356933
+77	Customer77	915502669485
+79	Customer79	769484953511
+80	Customer80	865295884922
+81	Customer81	901280845432
+82	Customer82	222224914144
+83	Customer83	578317484129
+84	Customer84	865376181014
+87	Customer87	379704111131
+88	Customer88	670575055632
+91	Customer91	949999355646
+92	Customer92	252485800210
+95	Customer95	484166733787
+98	Customer98	503912266375
+99	Customer99	930170815680
+100	Customer100	746828303834
+101	Customer101	129124862838
+102	Customer102	711361384318
+103	Customer103	400145632352
+105	Customer105	935007362148
+106	Customer106	693697845218
+107	Customer107	136083554430
+108	Customer108	585516780790
+109	Customer109	879382211224
+112	Customer112	364000598627
+117	Customer117	167470974179
+119	Customer119	381280647477
+120	Customer120	524222125298
+122	Customer122	278184384833
+123	Customer123	634713136972
+124	Customer124	280563917683
+125	Customer125	397489029127
+127	Customer127	139215619827
+128	Customer128	276745366515
+129	Customer129	561939673819
+130	Customer130	959754521228
+134	Customer134	578432494868
+135	Customer135	742519079481
+138	Customer138	381087020480
+139	Customer139	871825803587
+141	Customer141	932382710883
+142	Customer142	433528951757
+143	Customer143	695683746585
+144	Customer144	765266587388
+146	Customer146	118839466256
+148	Customer148	237256532344
+149	Customer149	422999235560
+150	Customer150	646191035446
+151	Customer151	219367358029
+156	Customer156	874696338491
+157	Customer157	309868484726
+158	Customer158	449863871660
+159	Customer159	972597348711
+160	Customer160	201408039908
+161	Customer161	620761721297
+162	Customer162	313429413256
+164	Customer164	135042661718
+166	Customer166	300309168740
+167	Customer167	906714683188
+168	Customer168	698149452664
+170	Customer170	298086378722
+171	Customer171	171389435413
+172	Customer172	176989912867
+174	Customer174	512376421380
+175	Customer175	996834539160
+176	Customer176	516150335880
+177	Customer177	310563141373
+178	Customer178	687760752417
+179	Customer179	683302506109
+180	Customer180	276849081059
+184	Customer184	355573303636
+186	Customer186	636261301284
+187	Customer187	602758589619
+188	Customer188	636917325743
+190	Customer190	443626107959
+191	Customer191	720275329615
+193	Customer193	167470267602
+194	Customer194	880788553495
+196	Customer196	728589982570
+197	Customer197	388595850088
+198	Customer198	514605845196
+202	Customer202	210284928264
+203	Customer203	204224287503
+204	Customer204	626881786755
+206	Customer206	673411126555
+207	Customer207	570028109569
+208	Customer208	363750336739
+209	Customer209	601629335942
+210	Customer210	665103344801
+211	Customer211	420542853500
+213	Customer213	436635538908
+215	Customer215	833789200922
+216	Customer216	900896838000
+218	Customer218	274667641150
+219	Customer219	615303131549
+222	Customer222	914476783870
+225	Customer225	531143197297
+226	Customer226	134461489935
+228	Customer228	190095427217
+230	Customer230	305149593977
+232	Customer232	652444971483
+233	Customer233	715063076420
+236	Customer236	746267869124
+238	Customer238	998094385765
+240	Customer240	545014514231
+241	Customer241	552242832631
+243	Customer243	518990460309
+244	Customer244	529071560041
+246	Customer246	248221848134
+248	Customer248	645292537701
+250	Customer250	544154761423
+251	Customer251	835286006227
+252	Customer252	568980408391
+253	Customer253	841274357495
+254	Customer254	930503610135
+255	Customer255	484366493523
+256	Customer256	370516127174
+257	Customer257	850529067624
+258	Customer258	605091431106
+259	Customer259	369707493905
+262	Customer262	676142144771
+263	Customer263	291959681494
+264	Customer264	719292798776
+266	Customer266	936558508686
+267	Customer267	305669629139
+268	Customer268	220189760917
+269	Customer269	139033863577
+270	Customer270	848921145872
+271	Customer271	926233122995
+272	Customer272	270834453826
+274	Customer274	812253372862
+275	Customer275	404580934025
+276	Customer276	693509432471
+277	Customer277	522823428964
+279	Customer279	399517486017
+280	Customer280	184481094012
+281	Customer281	901777775763
+283	Customer283	389244167449
+284	Customer284	279745624967
+285	Customer285	113643038348
+286	Customer286	537080437694
+287	Customer287	902795481109
+288	Customer288	892054777822
+290	Customer290	760296925190
+291	Customer291	562761679963
+293	Customer293	203844688990
+294	Customer294	144881166283
+295	Customer295	443816672105
+296	Customer296	736596722558
+297	Customer297	343926766669
+298	Customer298	539590743445
+299	Customer299	803482857684
+300	Customer300	233798394255
+\.
+
+
+--
+-- TOC entry 3416 (class 0 OID 24992)
+-- Dependencies: 218
+-- Data for Name: department; Type: TABLE DATA; Schema: public; Owner: cotehila
+--
+
+COPY public.department (depid, depname, aislenum) FROM stdin;
+1	Electronics	10
+2	Clothing	12
+3	Food	15
+4	Furniture	5
+5	Toys	20
+6	Books	8
+7	Sport	7
+8	Beauty	9
+9	Gardening	4
+10	Music	12
+11	Jewelry	6
+12	Automotive	13
+13	Health	10
+14	Pet Supplies	6
+15	Stationery	5
+16	Meat	6
+17	Vegetables	7
+18	Bakery	8
+19	Fish	9
+20	Frozen Food	10
+2000	Gualterio	444
+2001	Shaun	555
+2003	Reiko	666
+\.
+
+
+--
+-- TOC entry 3417 (class 0 OID 24996)
+-- Dependencies: 219
+-- Data for Name: employee; Type: TABLE DATA; Schema: public; Owner: cotehila
+--
+
+COPY public.employee (eid, ename, ephone, depid, rid) FROM stdin;
+1	Employee1	233643715257	3	6
+2	Employee2	566215199523	12	5
+3	Employee3	497194325901	18	6
+4	Employee4	324594896756	16	3
+5	Employee5	835452799492	18	4
+6	Employee6	957818532404	19	5
+7	Employee7	649414632007	19	9
+8	Employee8	327820124447	9	1
+9	Employee9	132471733668	18	2
+10	Employee10	272528171115	9	2
+11	Employee11	857355230182	1	6
+12	Employee12	803113035649	1	10
+13	Employee13	306577490743	10	7
+14	Employee14	707517810076	13	10
+15	Employee15	286839109191	8	10
+16	Employee16	533049062856	9	5
+17	Employee17	420933658596	6	1
+18	Employee18	691708434273	5	2
+19	Employee19	790589915562	7	9
+20	Employee20	954703642200	8	6
+21	Employee21	941739168422	20	9
+22	Employee22	273490636187	14	2
+23	Employee23	360542944696	4	8
+24	Employee24	559066824346	3	10
+25	Employee25	533208497735	11	9
+26	Employee26	736303284016	6	6
+27	Employee27	757980901717	3	7
+28	Employee28	227776974850	18	8
+29	Employee29	682754106760	19	4
+30	Employee30	264013809352	12	5
+31	Employee31	208200855362	7	1
+32	Employee32	109761126682	1	4
+33	Employee33	523842993099	18	6
+34	Employee34	482090669002	12	5
+35	Employee35	535424528788	9	7
+36	Employee36	643539149475	12	9
+37	Employee37	922569362444	11	6
+38	Employee38	127378754796	15	4
+39	Employee39	607705195102	4	1
+40	Employee40	348427088761	20	1
+41	Employee41	385987098242	11	5
+42	Employee42	438573988109	20	3
+43	Employee43	122287767588	12	10
+44	Employee44	836027284938	4	5
+45	Employee45	490590536733	20	8
+46	Employee46	909236212431	2	4
+47	Employee47	571021897699	7	3
+48	Employee48	535231751052	3	6
+49	Employee49	296523503273	1	4
+50	Employee50	231915605639	13	1
+51	Employee51	406761278889	11	3
+52	Employee52	889124363208	1	8
+53	Employee53	924251403760	7	1
+54	Employee54	665204825633	9	1
+55	Employee55	223597894630	17	8
+56	Employee56	875434866287	1	10
+57	Employee57	650271793197	1	1
+58	Employee58	827950428661	14	2
+59	Employee59	578726422278	1	9
+60	Employee60	989156309929	13	6
+61	Employee61	163729042606	17	9
+62	Employee62	111989604755	14	1
+63	Employee63	650747875397	18	4
+64	Employee64	698996100451	2	9
+65	Employee65	570151896405	16	6
+66	Employee66	317518548517	1	7
+67	Employee67	151759764239	12	10
+68	Employee68	763692023310	11	1
+69	Employee69	359627825786	1	4
+70	Employee70	113338362270	16	1
+71	Employee71	711889121572	20	4
+72	Employee72	534001890538	20	6
+73	Employee73	731591960709	10	5
+74	Employee74	206085170343	8	2
+75	Employee75	420354172061	16	7
+76	Employee76	142253975708	14	8
+77	Employee77	407338864646	1	7
+78	Employee78	539322721507	16	4
+79	Employee79	907386184518	10	7
+80	Employee80	879912465259	5	1
+81	Employee81	353995744468	3	5
+82	Employee82	445757737526	19	10
+83	Employee83	441106963090	9	10
+84	Employee84	212638908312	7	7
+85	Employee85	201730056412	5	8
+86	Employee86	842386385780	8	3
+87	Employee87	635204870206	17	3
+88	Employee88	499626200385	4	8
+89	Employee89	773707167105	3	9
+90	Employee90	696875748921	10	2
+91	Employee91	183740233476	12	3
+92	Employee92	928783004859	13	10
+93	Employee93	422637541421	2	8
+94	Employee94	196111431143	20	2
+95	Employee95	624302248873	20	6
+96	Employee96	354672851216	20	4
+97	Employee97	100584332655	7	5
+98	Employee98	387237456542	4	8
+99	Employee99	180505028269	3	10
+100	Employee100	511109770019	14	9
+\.
+
+
+--
+-- TOC entry 3418 (class 0 OID 25000)
+-- Dependencies: 220
+-- Data for Name: orderprod; Type: TABLE DATA; Schema: public; Owner: cotehila
+--
+
+COPY public.orderprod (amount, pid, ordid) FROM stdin;
+3	10	309
+5	97	485
+10	108	294
+6	26	216
+10	26	504
+7	5	613
+2	46	370
+2	88	480
+8	95	576
+9	38	464
+1	12	438
+2	121	203
+10	22	64
+10	62	372
+3	45	351
+3	29	391
+8	63	216
+4	24	470
+9	44	34
+7	103	601
+3	88	47
+3	4	349
+8	104	218
+6	7	499
+9	121	440
+5	20	159
+9	114	530
+1	110	152
+7	43	171
+4	20	569
+9	106	88
+8	119	281
+2	85	218
+5	105	258
+9	130	341
+1	118	55
+2	25	351
+7	116	408
+8	66	57
+8	43	342
+4	105	514
+3	90	163
+6	7	557
+6	60	222
+2	80	567
+2	75	613
+8	55	610
+4	51	353
+6	121	146
+10	33	435
+4	18	429
+1	129	394
+5	123	159
+8	52	244
+8	103	519
+4	15	487
+3	64	260
+4	69	429
+9	12	553
+5	43	422
+6	77	418
+3	57	342
+1	56	236
+1	93	118
+2	127	487
+8	59	8
+6	97	323
+9	89	210
+4	103	567
+3	91	74
+2	27	601
+2	108	7
+9	111	323
+7	22	360
+5	2	429
+4	52	578
+4	58	27
+9	113	294
+9	29	529
+10	69	331
+4	21	2
+2	111	2
+5	60	144
+8	104	351
+5	130	20
+1	11	419
+1	83	212
+10	64	532
+6	67	132
+2	47	163
+7	27	262
+3	32	532
+9	101	610
+10	71	582
+2	37	409
+10	92	133
+4	88	519
+7	70	359
+5	2	612
+3	105	303
+3	60	155
+6	103	546
+3	17	3
+8	79	497
+3	11	1
+10	65	129
+10	100	457
+8	23	284
+8	44	409
+10	93	152
+2	27	610
+9	117	176
+9	77	44
+8	30	306
+6	6	339
+10	86	504
+3	57	244
+3	100	24
+9	105	529
+4	108	142
+4	66	202
+1	104	362
+9	104	303
+2	106	497
+1	113	582
+2	27	169
+10	39	422
+1	85	332
+9	100	16
+1	38	408
+7	55	456
+2	25	146
+5	81	131
+7	97	144
+8	81	167
+1	18	358
+6	79	564
+10	99	169
+6	4	191
+10	29	348
+10	72	30
+6	116	319
+5	73	180
+10	42	554
+8	15	155
+3	14	380
+3	112	130
+9	55	205
+10	104	353
+6	49	89
+1	39	341
+10	30	305
+1	80	319
+8	119	438
+9	107	603
+10	84	451
+4	90	176
+3	104	558
+4	11	207
+6	79	516
+9	2	353
+4	28	99
+9	35	576
+3	9	205
+6	9	288
+6	100	53
+3	6	272
+8	84	256
+6	48	28
+6	66	77
+4	1	306
+6	123	282
+5	81	456
+5	83	440
+1	84	169
+1	18	26
+5	105	331
+9	96	303
+2	13	601
+3	12	63
+4	70	252
+6	53	64
+4	95	526
+2	59	281
+4	121	76
+6	112	391
+9	116	152
+2	30	573
+1	63	495
+10	55	355
+8	74	130
+9	76	421
+3	50	63
+2	102	440
+2	68	485
+1	64	90
+1	118	567
+4	82	139
+4	3	189
+4	61	241
+9	114	439
+10	34	256
+9	59	170
+10	97	335
+8	41	339
+2	81	239
+10	87	556
+6	119	359
+7	23	326
+2	53	131
+9	103	289
+4	70	349
+5	68	172
+3	97	504
+8	129	508
+1	107	246
+3	19	569
+6	60	48
+9	31	141
+9	66	46
+1	56	467
+6	34	539
+3	125	309
+1	124	408
+10	96	598
+2	110	495
+10	23	422
+4	4	262
+2	69	475
+7	121	90
+3	125	559
+2	83	132
+10	114	82
+5	90	421
+7	93	248
+9	99	539
+3	61	562
+5	58	185
+5	65	34
+8	100	399
+10	6	177
+1	45	577
+7	86	130
+8	7	7
+10	77	601
+3	84	351
+1	121	502
+8	40	418
+5	122	612
+9	9	19
+6	80	391
+7	18	467
+4	1	345
+9	71	480
+5	23	457
+7	59	584
+2	17	360
+7	51	439
+7	36	583
+10	91	144
+4	98	149
+1	10	55
+7	119	87
+3	127	384
+10	72	399
+5	20	532
+4	27	217
+8	126	342
+7	126	335
+10	42	46
+1	17	132
+8	12	60
+9	21	413
+7	22	282
+10	61	518
+8	52	612
+1	39	487
+2	128	435
+5	70	201
+3	107	260
+8	42	57
+8	122	418
+2	118	35
+3	25	24
+4	46	332
+8	49	500
+6	54	78
+2	9	167
+9	48	23
+2	28	129
+6	54	380
+2	128	538
+3	79	586
+10	83	539
+7	6	421
+4	123	305
+10	116	32
+4	55	542
+7	48	3
+6	53	284
+6	38	144
+3	24	207
+1	24	611
+6	88	249
+3	112	440
+9	96	212
+4	101	612
+8	34	414
+5	100	303
+10	38	59
+7	69	407
+6	130	399
+4	46	130
+6	46	283
+1	8	440
+1	113	88
+1	69	583
+9	34	28
+7	25	18
+2	103	241
+3	36	474
+8	49	334
+3	44	3
+7	46	88
+7	45	398
+3	123	429
+5	98	47
+5	124	63
+4	107	301
+1	19	539
+6	38	594
+4	82	24
+7	87	7
+8	72	196
+3	90	407
+6	82	438
+1	102	507
+5	47	43
+9	87	351
+3	44	399
+10	33	345
+7	45	474
+10	108	256
+6	85	16
+2	119	246
+6	37	522
+6	27	384
+1	43	408
+6	111	391
+2	51	349
+3	73	203
+1	16	326
+1	111	419
+5	78	189
+4	33	569
+9	109	87
+8	48	297
+4	15	591
+4	31	512
+7	130	163
+6	112	205
+6	35	20
+6	65	229
+5	59	466
+3	42	241
+5	50	514
+9	11	20
+1	72	374
+9	118	378
+4	57	491
+7	69	434
+2	116	547
+8	23	178
+3	122	306
+8	22	321
+5	110	541
+9	2	3
+9	44	236
+8	57	142
+10	90	48
+10	34	35
+3	70	266
+8	94	418
+5	46	451
+3	15	248
+8	59	580
+9	106	27
+10	46	499
+4	67	2
+10	10	66
+7	91	67
+7	83	3
+6	4	346
+3	49	251
+9	51	30
+7	90	110
+10	45	141
+4	91	203
+1	50	573
+4	32	48
+5	41	142
+10	30	146
+10	95	547
+3	34	522
+3	7	309
+10	21	326
+8	123	326
+8	128	175
+9	54	131
+5	7	474
+8	85	131
+2	111	110
+2	91	297
+8	71	272
+8	32	258
+9	88	532
+7	61	576
+8	110	98
+5	122	262
+4	49	539
+4	65	495
+8	40	47
+6	19	288
+6	125	420
+3	52	380
+10	120	220
+7	122	176
+6	8	244
+1	66	266
+5	89	499
+6	110	272
+10	13	57
+9	72	598
+2	75	360
+9	73	167
+8	18	118
+6	122	504
+3	125	576
+8	95	60
+\.
+
+
+--
+-- TOC entry 3419 (class 0 OID 25004)
+-- Dependencies: 221
+-- Data for Name: orders; Type: TABLE DATA; Schema: public; Owner: cotehila
+--
+
+COPY public.orders (ordid, orddate, ordstatus, ordcost, cid) FROM stdin;
+1	2024-12-07	cancelled	436	1
+2	2024-10-25	cancelled	348	2
+3	2025-02-05	delivered	281	2
+5	2024-09-17	delivered	73	3
+6	2024-07-20	cancelled	246	3
+7	2024-10-27	ordered	435	4
+8	2024-12-14	ordered	223	5
+14	2024-10-27	delivered	249	7
+15	2025-01-21	ordered	118	7
+16	2025-02-18	ordered	365	8
+17	2024-08-03	delivered	78	9
+18	2025-01-18	delivered	171	9
+19	2024-10-23	delivered	477	10
+20	2024-10-22	ordered	442	11
+22	2024-09-09	cancelled	290	11
+23	2024-05-14	shipped	284	12
+24	2024-05-02	cancelled	491	12
+26	2024-06-29	cancelled	369	13
+27	2024-04-13	cancelled	257	13
+28	2024-09-08	delivered	97	14
+30	2025-01-26	shipped	62	15
+32	2024-07-09	cancelled	313	15
+34	2024-09-02	cancelled	252	16
+35	2024-05-30	cancelled	219	17
+36	2024-07-24	ordered	150	17
+41	2024-12-21	ordered	208	19
+42	2024-10-08	cancelled	163	19
+43	2024-05-08	shipped	368	19
+44	2024-07-12	shipped	105	20
+46	2025-03-29	cancelled	372	20
+47	2024-07-08	ordered	163	21
+48	2025-03-02	delivered	290	21
+53	2024-07-18	delivered	254	23
+55	2025-03-27	cancelled	282	24
+56	2025-01-08	shipped	357	25
+57	2025-02-04	ordered	248	25
+58	2024-10-01	shipped	308	25
+59	2025-02-06	ordered	314	26
+60	2024-08-04	delivered	154	26
+63	2024-08-19	shipped	402	27
+64	2024-05-25	ordered	300	27
+66	2024-09-07	delivered	446	28
+67	2024-12-19	ordered	428	28
+68	2024-08-26	ordered	379	29
+71	2025-02-27	ordered	420	30
+73	2024-12-26	delivered	107	31
+74	2025-02-18	cancelled	214	32
+76	2024-08-18	cancelled	179	33
+77	2024-08-03	delivered	453	34
+78	2024-05-30	shipped	226	35
+82	2025-03-27	ordered	69	38
+85	2024-05-20	delivered	205	39
+87	2025-01-09	ordered	159	40
+88	2024-04-27	shipped	463	41
+89	2024-12-21	delivered	356	41
+90	2024-10-30	cancelled	484	42
+96	2025-03-29	shipped	275	45
+98	2025-02-28	delivered	380	45
+99	2025-01-11	shipped	443	46
+100	2025-01-25	cancelled	351	47
+103	2024-12-08	shipped	359	48
+105	2024-05-03	ordered	98	49
+107	2025-01-31	ordered	318	49
+110	2024-05-27	shipped	393	50
+111	2024-05-20	cancelled	299	51
+114	2025-01-15	delivered	176	52
+118	2024-10-20	shipped	104	56
+123	2024-11-11	delivered	355	58
+126	2024-05-28	cancelled	251	60
+129	2024-07-03	ordered	337	61
+130	2024-12-01	delivered	461	62
+131	2024-10-30	delivered	122	62
+132	2024-10-29	ordered	385	62
+133	2025-01-21	shipped	130	63
+138	2024-06-13	shipped	322	64
+139	2024-09-11	shipped	430	65
+141	2024-10-31	delivered	111	65
+142	2024-05-09	cancelled	313	66
+144	2024-11-07	shipped	358	66
+146	2024-09-20	cancelled	334	68
+147	2024-11-12	shipped	274	68
+149	2024-08-16	delivered	349	69
+152	2024-07-24	ordered	126	70
+154	2024-05-08	delivered	478	72
+155	2024-07-23	ordered	336	73
+159	2024-10-16	shipped	398	75
+163	2025-01-04	cancelled	67	77
+167	2024-10-09	shipped	444	79
+169	2024-08-09	ordered	113	80
+170	2024-11-11	delivered	168	81
+171	2025-01-01	ordered	333	81
+172	2025-02-17	ordered	409	82
+175	2025-03-14	cancelled	172	83
+176	2024-11-13	delivered	215	83
+177	2024-05-31	cancelled	306	83
+178	2024-11-19	shipped	499	84
+180	2024-11-07	delivered	480	84
+184	2024-09-05	delivered	272	87
+185	2024-10-17	delivered	386	88
+189	2025-01-06	ordered	473	91
+191	2024-07-30	cancelled	354	92
+196	2024-07-28	delivered	467	95
+201	2024-06-08	shipped	135	98
+202	2025-03-29	cancelled	250	98
+203	2025-02-16	shipped	267	99
+205	2024-12-13	cancelled	282	100
+207	2024-05-03	delivered	263	101
+209	2024-10-25	ordered	398	102
+210	2024-06-07	cancelled	326	103
+212	2025-01-28	delivered	180	103
+216	2024-04-15	shipped	442	105
+217	2024-12-05	delivered	214	106
+218	2024-12-09	ordered	148	107
+219	2024-05-29	shipped	228	108
+220	2024-06-23	shipped	498	108
+222	2024-09-03	ordered	376	109
+229	2025-01-20	delivered	416	112
+236	2024-10-21	delivered	424	117
+239	2024-06-27	cancelled	408	119
+241	2024-07-10	cancelled	393	120
+244	2025-03-01	shipped	203	122
+246	2024-06-09	ordered	225	123
+248	2024-12-09	shipped	54	124
+249	2025-03-24	delivered	227	124
+251	2024-11-24	shipped	274	125
+252	2024-10-08	ordered	336	125
+256	2024-10-17	delivered	307	127
+258	2024-12-13	ordered	371	128
+259	2024-12-05	delivered	137	128
+260	2024-11-21	cancelled	420	128
+262	2024-04-07	ordered	483	129
+263	2025-02-17	ordered	455	129
+266	2025-03-07	ordered	243	130
+271	2024-11-10	delivered	241	134
+272	2025-01-19	ordered	118	134
+273	2024-06-06	ordered	316	135
+281	2024-10-25	delivered	476	138
+282	2024-09-24	shipped	353	139
+283	2024-06-19	cancelled	225	139
+284	2024-07-12	ordered	489	139
+288	2025-02-04	delivered	371	141
+289	2024-10-29	cancelled	451	142
+291	2024-06-06	shipped	399	143
+294	2025-02-14	cancelled	335	144
+297	2024-10-02	ordered	361	146
+301	2025-01-11	cancelled	87	148
+303	2024-08-30	delivered	438	149
+304	2024-07-19	cancelled	149	149
+305	2024-04-22	delivered	339	149
+306	2024-07-31	ordered	411	150
+309	2024-12-06	cancelled	446	151
+311	2024-10-14	cancelled	448	151
+319	2024-07-11	shipped	95	156
+320	2024-11-12	shipped	422	157
+321	2024-04-09	delivered	384	158
+322	2024-09-06	shipped	426	159
+323	2024-08-05	ordered	91	160
+326	2025-01-18	cancelled	355	161
+329	2024-04-22	shipped	417	162
+331	2024-09-13	delivered	375	164
+332	2024-07-30	ordered	365	164
+334	2024-04-25	ordered	259	166
+335	2024-09-15	cancelled	306	166
+338	2025-03-27	cancelled	361	167
+339	2024-11-25	cancelled	155	168
+341	2024-04-07	shipped	86	170
+342	2024-08-20	delivered	126	170
+345	2024-12-30	delivered	350	171
+346	2024-04-08	shipped	57	172
+348	2025-01-29	cancelled	498	174
+349	2024-04-28	cancelled	145	174
+350	2024-06-17	delivered	338	174
+351	2024-08-14	cancelled	439	175
+352	2024-06-06	shipped	387	175
+353	2025-02-22	delivered	268	176
+355	2024-12-20	delivered	244	176
+358	2024-08-14	shipped	266	177
+359	2024-06-18	ordered	277	178
+360	2025-01-01	ordered	276	179
+362	2024-04-16	delivered	51	180
+370	2025-01-05	cancelled	196	184
+372	2024-04-17	delivered	123	186
+374	2024-04-21	cancelled	178	186
+376	2024-08-03	cancelled	279	187
+378	2025-03-19	shipped	165	188
+380	2025-01-31	cancelled	337	188
+384	2024-07-22	shipped	188	190
+385	2025-03-30	delivered	482	190
+386	2025-03-19	delivered	254	191
+389	2024-09-10	delivered	437	193
+391	2025-02-02	ordered	229	194
+394	2024-04-07	shipped	118	196
+398	2024-05-13	delivered	385	197
+399	2024-11-29	delivered	141	198
+405	2024-08-12	ordered	227	202
+407	2025-01-07	shipped	243	203
+408	2024-05-09	shipped	291	203
+409	2025-02-24	delivered	188	204
+413	2024-05-09	shipped	164	206
+414	2025-02-27	cancelled	443	206
+415	2024-05-15	shipped	127	207
+417	2024-08-26	cancelled	197	208
+418	2024-10-29	delivered	289	209
+419	2024-12-08	ordered	244	209
+420	2024-10-25	cancelled	437	209
+421	2024-04-10	cancelled	272	210
+422	2025-02-06	cancelled	397	211
+423	2024-07-08	ordered	57	211
+429	2024-12-13	shipped	439	213
+434	2024-08-24	shipped	252	215
+435	2025-02-23	ordered	386	216
+438	2024-08-07	cancelled	128	218
+439	2024-07-17	ordered	408	218
+440	2024-04-10	delivered	387	219
+445	2024-07-28	shipped	331	222
+451	2024-10-15	delivered	375	225
+454	2025-01-25	ordered	237	226
+456	2025-02-25	shipped	109	228
+457	2024-08-13	delivered	412	228
+460	2024-11-25	delivered	78	230
+464	2024-09-16	ordered	494	232
+465	2024-05-26	ordered	274	232
+466	2024-04-10	cancelled	110	232
+467	2024-05-29	cancelled	252	233
+470	2024-07-16	cancelled	249	236
+473	2024-10-10	delivered	91	238
+474	2024-12-03	delivered	173	238
+475	2024-11-14	delivered	249	238
+477	2025-01-04	ordered	89	240
+479	2025-02-28	delivered	115	240
+480	2024-07-31	delivered	164	241
+481	2024-12-10	cancelled	226	241
+485	2024-05-09	delivered	326	243
+487	2024-12-25	ordered	420	243
+489	2024-05-12	ordered	238	244
+491	2024-06-02	cancelled	152	246
+495	2024-10-17	shipped	308	248
+497	2024-06-20	cancelled	265	248
+499	2025-03-03	cancelled	293	250
+500	2024-07-22	cancelled	52	250
+502	2024-12-06	delivered	414	251
+504	2025-03-28	delivered	69	252
+506	2024-09-16	ordered	455	253
+507	2024-05-07	shipped	117	254
+508	2024-11-24	delivered	291	254
+510	2024-09-12	ordered	126	255
+512	2025-03-04	cancelled	253	256
+514	2024-08-26	ordered	76	256
+516	2024-08-25	shipped	434	257
+518	2024-12-02	delivered	139	258
+519	2024-06-06	ordered	279	258
+522	2024-05-30	cancelled	407	259
+526	2024-06-03	ordered	255	262
+529	2025-02-20	delivered	119	263
+530	2024-04-14	cancelled	295	263
+532	2024-09-30	cancelled	457	264
+538	2024-09-22	cancelled	370	266
+539	2025-02-13	cancelled	310	267
+541	2024-06-05	ordered	385	268
+542	2024-06-23	delivered	144	269
+545	2024-12-08	cancelled	417	270
+546	2024-08-16	delivered	65	270
+547	2025-03-08	shipped	185	271
+548	2025-03-12	ordered	273	271
+550	2024-05-18	cancelled	455	272
+553	2025-02-17	delivered	324	274
+554	2024-06-17	delivered	192	274
+556	2024-04-20	delivered	196	275
+557	2024-10-21	delivered	421	275
+558	2024-08-24	delivered	319	275
+559	2024-06-09	shipped	386	276
+562	2024-07-12	ordered	127	277
+564	2025-01-14	cancelled	445	277
+567	2024-12-22	delivered	161	279
+569	2024-08-26	cancelled	327	280
+573	2024-05-20	ordered	220	281
+576	2024-11-15	delivered	241	283
+577	2024-09-02	delivered	394	284
+578	2024-04-20	cancelled	99	284
+580	2025-02-04	ordered	164	285
+582	2025-01-18	delivered	346	286
+583	2024-06-19	delivered	419	286
+584	2024-06-24	shipped	195	287
+586	2024-08-11	delivered	161	288
+591	2024-06-27	delivered	192	290
+594	2025-03-19	delivered	296	291
+598	2024-04-23	ordered	227	293
+601	2024-05-31	cancelled	388	294
+603	2024-04-18	ordered	121	295
+605	2025-02-08	delivered	132	296
+606	2024-08-21	delivered	274	296
+607	2024-05-02	cancelled	304	297
+610	2025-01-14	delivered	372	298
+611	2024-05-02	delivered	92	299
+612	2024-04-15	cancelled	236	299
+613	2025-01-16	ordered	71	300
+3001	2025-03-31	ordered	100	1
+\.
+
+
+--
+-- TOC entry 3420 (class 0 OID 25010)
+-- Dependencies: 222
+-- Data for Name: product; Type: TABLE DATA; Schema: public; Owner: cotehila
+--
+
+COPY public.product (pid, pname, stock, price, validity, depid) FROM stdin;
+1	Laptop	13	72.49	2025-11-29	20
+2	Shirt	27	149.17	2025-12-15	15
+3	Apple	2	70.42	2026-02-13	14
+4	Sofa	27	18	2025-06-15	14
+5	Toy Car	32	107.5	2026-03-13	4
+6	Book	37	113.37	2025-11-22	14
+7	TV	48	29.74	2025-10-17	11
+8	Jeans	1	14.76	2026-01-04	4
+9	Banana	25	86.29	2025-10-04	1
+10	Couch	37	68.02	2026-02-13	19
+11	Smartphone	12	14.33	2026-01-03	6
+12	Tablet	46	30.2	2026-01-25	2
+13	Headphones	36	30.38	2025-04-18	13
+14	Camera	7	84.67	2026-01-15	4
+15	Monitor	30	60.64	2025-06-30	5
+16	Speaker	19	68.46	2025-11-19	2
+17	Microwave	9	67.76	2025-10-23	3
+18	Fridge	2	82.95	2025-11-16	2
+19	Washing Machine	37	88.84	2025-08-11	7
+20	Oven	23	168.1	2026-01-11	19
+21	Shoes	42	189.45	2025-12-07	16
+22	Jacket	18	79.31	2025-10-10	11
+23	Dress	1	198.13	2025-04-20	14
+24	T-shirt	2	73.08	2025-10-23	2
+25	Skirt	35	138.35	2025-06-14	17
+26	Sweater	8	58.38	2025-08-22	2
+27	Pants	20	159.95	2025-11-10	13
+28	Shorts	42	76.46	2025-07-14	2
+29	Boots	4	138.86	2025-08-11	18
+30	Gloves	48	149.94	2025-10-22	1
+31	Toothpaste	21	82.72	2025-08-24	12
+32	Shampoo	34	30.01	2025-09-12	17
+33	Conditioner	6	184.97	2025-06-04	12
+34	Deodorant	42	29.24	2025-06-30	10
+35	Face Cream	21	136.32	2025-11-29	6
+36	Sunscreen	17	158.75	2025-06-09	10
+37	Perfume	13	101.73	2025-07-11	11
+38	Nail Polish	47	34.12	2025-05-22	10
+39	Lipstick	22	184.71	2025-10-25	11
+40	Mascara	22	108.15	2026-03-22	16
+41	Desk	47	146.54	2026-03-03	2
+42	Chair	37	20.68	2025-11-15	11
+43	Bed	45	192.46	2025-07-05	15
+44	Couch	50	160.73	2026-01-07	4
+45	Coffee Table	33	23.89	2025-05-24	5
+46	Bookshelf	29	68	2025-08-16	3
+47	Lampshade	0	78.26	2026-02-13	14
+48	Dining Table	0	158.61	2025-06-02	18
+49	Wardrobe	30	69.79	2025-07-02	16
+50	Curtains	10	48.56	2026-01-26	17
+51	Soccer Ball	19	147.66	2025-12-14	18
+52	Tennis Racket	4	109.5	2025-12-21	10
+53	Basketball	35	135.35	2025-06-24	8
+54	Baseball Glove	1	64.44	2026-03-13	2
+55	Hockey Stick	45	106.18	2026-02-14	15
+56	Yoga Mat	33	80.06	2025-06-28	10
+57	Bicycle	46	117.04	2025-06-17	4
+58	Jump Rope	48	94.61	2025-06-21	15
+59	Football	18	82.77	2025-11-14	9
+60	Dumbbells	22	120.41	2025-11-21	13
+61	Dog Food	46	115.05	2025-04-30	10
+62	Cat Litter	48	154.34	2025-04-18	1
+63	Bird Cage	17	192.16	2025-11-02	15
+64	Fish Tank	1	190.24	2025-08-29	7
+65	Leash	5	107.3	2025-04-15	5
+66	Collar	16	168.39	2025-08-09	14
+67	Pet Shampoo	23	187.92	2026-03-26	13
+68	Pet Toy	34	56.84	2025-11-20	7
+69	Pet Bed	35	17.29	2025-04-12	3
+70	Pet Carrier	10	137.48	2025-07-10	1
+71	Cucumber	15	51.79	2026-01-03	11
+72	Tomato	31	198.8	2025-05-14	18
+73	Carrot	4	183.05	2025-12-24	14
+74	Lettuce	18	197.02	2025-12-02	3
+75	Potato	5	165.72	2026-01-26	16
+76	Onion	49	120.44	2025-09-10	13
+77	Garlic	9	70.82	2026-03-08	10
+79	Spinach	0	190.14	2025-05-31	17
+80	Peas	18	177.56	2025-07-31	5
+81	Chicken Breast	42	39.51	2026-01-18	20
+82	Beef Steak	44	102.2	2025-08-23	5
+83	Pork Chops	50	157.24	2025-10-24	9
+84	Salmon	41	9.02	2025-11-07	1
+85	Shrimp	16	161.25	2025-09-23	8
+86	Lamb Chops	1	143.05	2025-05-06	20
+87	Sausages	23	81.05	2025-08-10	18
+88	Bacon	25	123.11	2025-05-17	7
+89	Ground Beef	30	50.81	2026-01-06	1
+90	Turkey	11	15.49	2025-08-06	7
+91	Bread	6	98.07	2025-07-14	1
+92	Croissant	50	29.36	2025-06-23	15
+93	Baguette	10	52.96	2026-02-28	8
+94	Bagel	50	163.49	2026-01-19	19
+95	Ciabatta	7	61.99	2025-09-30	5
+96	Focaccia	27	198.51	2025-09-15	6
+97	Muffins	28	34.12	2026-01-28	7
+98	Donuts	36	71.6	2025-12-16	1
+99	Cinnamon Rolls	29	136.25	2026-02-15	2
+100	Pita Bread	29	14.24	2025-05-25	11
+101	Cheddar Cheese	21	37.36	2025-10-12	2
+102	Mozzarella Cheese	36	199.18	2025-12-18	15
+103	Parmesan Cheese	44	32.62	2025-04-06	8
+104	Cream Cheese	2	181.34	2025-10-08	20
+105	Brie Cheese	31	123.43	2026-03-27	6
+106	Gouda Cheese	19	187.4	2025-06-15	2
+107	Feta Cheese	18	160.21	2026-02-08	10
+108	Ricotta Cheese	11	136.46	2026-02-12	19
+109	Goat Cheese	10	100.95	2025-04-20	19
+110	Camembert	30	136.66	2025-12-05	2
+111	Yogurt	35	184.16	2025-11-20	1
+112	Butter	14	132.87	2025-09-28	19
+113	Milk	23	136.98	2025-11-05	15
+114	Almond Milk	25	95.68	2025-11-23	1
+115	Soy Milk	19	162.6	2025-08-04	19
+116	Orange Juice	28	169.5	2025-10-03	1
+117	Apple Juice	15	163.02	2026-02-25	15
+118	Coconut Milk	27	118.89	2025-09-19	8
+119	Coconut Water	25	11.08	2025-07-21	17
+120	Tomato Sauce	14	33.54	2025-05-22	1
+121	Mustard	3	72.72	2025-06-28	9
+122	Ketchup	13	103.79	2025-06-19	3
+123	Mayonnaise	23	75.88	2025-09-30	8
+124	Hot Sauce	46	59.3	2025-06-10	17
+125	Olive Oil	30	74.73	2025-08-19	18
+126	Vegetable Oil	13	61.41	2026-03-01	12
+127	Vinegar	2	54.75	2025-12-06	6
+128	Honey	22	15.46	2025-12-02	12
+129	Maple Syrup	36	35.28	2026-02-12	10
+130	Peanut Butter	9	84.59	2025-11-04	7
+78	Broccoli	3	0	2025-04-03	20
+\.
+
+
+--
+-- TOC entry 3421 (class 0 OID 25017)
+-- Dependencies: 223
+-- Data for Name: role; Type: TABLE DATA; Schema: public; Owner: cotehila
+--
+
+COPY public.role (rid, alias, rstatus) FROM stdin;
+1	Manager	active
+2	Salesperson	active
+3	Stocker	active
+4	Cashier	active
+5	Supervisor	active
+6	Cleaner	active
+7	Security	active
+8	Customer Service	active
+9	Marketing	active
+10	IT Support	active
+200	Manager	active
+\.
+
+
+--
+-- TOC entry 3247 (class 2606 OID 25023)
+-- Name: customer customer_cphone_key; Type: CONSTRAINT; Schema: public; Owner: cotehila
+--
+
+ALTER TABLE ONLY public.customer
+    ADD CONSTRAINT customer_cphone_key UNIQUE (cphone);
+
+
+--
+-- TOC entry 3249 (class 2606 OID 25025)
+-- Name: customer customer_pkey; Type: CONSTRAINT; Schema: public; Owner: cotehila
+--
+
+ALTER TABLE ONLY public.customer
+    ADD CONSTRAINT customer_pkey PRIMARY KEY (cid);
+
+
+--
+-- TOC entry 3251 (class 2606 OID 25027)
+-- Name: department department_pkey; Type: CONSTRAINT; Schema: public; Owner: cotehila
+--
+
+ALTER TABLE ONLY public.department
+    ADD CONSTRAINT department_pkey PRIMARY KEY (depid);
+
+
+--
+-- TOC entry 3253 (class 2606 OID 25029)
+-- Name: employee employee_ephone_key; Type: CONSTRAINT; Schema: public; Owner: cotehila
+--
+
+ALTER TABLE ONLY public.employee
+    ADD CONSTRAINT employee_ephone_key UNIQUE (ephone);
+
+
+--
+-- TOC entry 3255 (class 2606 OID 25031)
+-- Name: employee employee_pkey; Type: CONSTRAINT; Schema: public; Owner: cotehila
+--
+
+ALTER TABLE ONLY public.employee
+    ADD CONSTRAINT employee_pkey PRIMARY KEY (eid);
+
+
+--
+-- TOC entry 3257 (class 2606 OID 25033)
+-- Name: orderprod orderprod_pkey; Type: CONSTRAINT; Schema: public; Owner: cotehila
+--
+
+ALTER TABLE ONLY public.orderprod
+    ADD CONSTRAINT orderprod_pkey PRIMARY KEY (pid, ordid);
+
+
+--
+-- TOC entry 3259 (class 2606 OID 25035)
+-- Name: orders orders_pkey; Type: CONSTRAINT; Schema: public; Owner: cotehila
+--
+
+ALTER TABLE ONLY public.orders
+    ADD CONSTRAINT orders_pkey PRIMARY KEY (ordid);
+
+
+--
+-- TOC entry 3261 (class 2606 OID 25037)
+-- Name: product product_pkey; Type: CONSTRAINT; Schema: public; Owner: cotehila
+--
+
+ALTER TABLE ONLY public.product
+    ADD CONSTRAINT product_pkey PRIMARY KEY (pid);
+
+
+--
+-- TOC entry 3263 (class 2606 OID 25039)
+-- Name: role role_pkey; Type: CONSTRAINT; Schema: public; Owner: cotehila
+--
+
+ALTER TABLE ONLY public.role
+    ADD CONSTRAINT role_pkey PRIMARY KEY (rid);
+
+
+--
+-- TOC entry 3264 (class 2606 OID 25040)
+-- Name: employee employee_depid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: cotehila
+--
+
+ALTER TABLE ONLY public.employee
+    ADD CONSTRAINT employee_depid_fkey FOREIGN KEY (depid) REFERENCES public.department(depid) ON DELETE SET NULL;
+
+
+--
+-- TOC entry 3265 (class 2606 OID 25045)
+-- Name: employee employee_rid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: cotehila
+--
+
+ALTER TABLE ONLY public.employee
+    ADD CONSTRAINT employee_rid_fkey FOREIGN KEY (rid) REFERENCES public.role(rid) ON DELETE SET NULL;
+
+
+--
+-- TOC entry 3266 (class 2606 OID 25050)
+-- Name: orderprod orderprod_ordid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: cotehila
+--
+
+ALTER TABLE ONLY public.orderprod
+    ADD CONSTRAINT orderprod_ordid_fkey FOREIGN KEY (ordid) REFERENCES public.orders(ordid) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 3267 (class 2606 OID 25055)
+-- Name: orderprod orderprod_pid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: cotehila
+--
+
+ALTER TABLE ONLY public.orderprod
+    ADD CONSTRAINT orderprod_pid_fkey FOREIGN KEY (pid) REFERENCES public.product(pid) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 3268 (class 2606 OID 25060)
+-- Name: orders orders_cid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: cotehila
+--
+
+ALTER TABLE ONLY public.orders
+    ADD CONSTRAINT orders_cid_fkey FOREIGN KEY (cid) REFERENCES public.customer(cid) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 3269 (class 2606 OID 25065)
+-- Name: product product_depid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: cotehila
+--
+
+ALTER TABLE ONLY public.product
+    ADD CONSTRAINT product_depid_fkey FOREIGN KEY (depid) REFERENCES public.department(depid) ON DELETE CASCADE;
+
+
+-- Completed on 2025-04-06 16:57:09 UTC
+
+--
+-- PostgreSQL database dump complete
+--
+

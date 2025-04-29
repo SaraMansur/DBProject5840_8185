@@ -1,12 +1,17 @@
 --מוצא את שמות העובדים שעובדים במחלקה עם הכי הרבה מוצרים
 
+WITH ProductCount AS (
+    SELECT depId, COUNT(*) AS product_count
+    FROM product
+    GROUP BY depId
+),
+MaxProductCount AS (
+    SELECT MAX(product_count) AS max_count
+    FROM ProductCount
+)
 SELECT e.eName, d.depName
 FROM employee e
 JOIN department d ON e.depId = d.depId
-WHERE d.depId = (
-    SELECT p.depId
-    FROM product p
-    GROUP BY p.depId
-    ORDER BY COUNT(*) DESC
-    LIMIT 1
-);
+JOIN ProductCount pc ON d.depId = pc.depId
+JOIN MaxProductCount mpc ON pc.product_count = mpc.max_count;
+

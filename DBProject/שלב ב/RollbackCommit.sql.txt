@@ -1,0 +1,20 @@
+BEGIN;
+
+UPDATE employee
+SET eName = 'TemporaryName'
+WHERE eName = 'Employee77';
+
+SELECT * FROM employee WHERE eName IN ('Employee77', 'TemporaryName');
+ 
+ROLLBACK;
+
+
+BEGIN;
+
+UPDATE employee
+SET eName = 'CommittedName'
+WHERE eName = 'Employee77';
+
+SELECT * FROM employee WHERE eName IN ('Employee77', 'CommittedName');
+
+COMMIT;

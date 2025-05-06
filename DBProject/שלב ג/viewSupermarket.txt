@@ -1,0 +1,25 @@
+--VIEW של המאגר המקורי: סופרמרקט
+
+CREATE OR REPLACE VIEW view_customer_purchases AS
+SELECT
+    c.cid,
+    c.cname,
+    pu.purid,
+    pu.purdate,
+    pu.purmethod,
+    p.pname,
+    pp.amount
+FROM customer c
+JOIN purchase pu ON c.cid = pu.cid
+JOIN purprod pp ON pu.purid = pp.purid
+JOIN product p ON pp.pid = p.pid;
+
+--כמות מוצרים ברכישות של כל לקוח
+SELECT cname, SUM(amount) AS total_purchased
+FROM view_customer_purchases
+GROUP BY cname;
+
+--רשימת הרכישות של לקוח פלוני
+SELECT purid, purdate, pname, amount
+FROM view_customer_purchases
+WHERE cname = 'Customer1';

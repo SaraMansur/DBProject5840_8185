@@ -1,0 +1,29 @@
+--VIEW של המאגר הזר: מכולת
+
+
+-- View 1: Customer Orders View
+CREATE OR REPLACE VIEW view_supplier_orders AS
+SELECT
+    s.sid,
+    s.sname,
+    o.ordid,
+    o.orddate,
+    o.paymentterms,
+    p.pname,
+    op.amount
+FROM supplier s
+JOIN "order" o ON s.sid = o.sid
+JOIN ordprod op ON o.ordid = op.ordid
+JOIN product p ON op.pid = p.pid;
+
+--הספק שהזמינו ממנו הכי הרבה הזמנות.
+SELECT sname, COUNT(DISTINCT ordid) AS total_orders
+FROM view_supplier_orders
+GROUP BY sname
+ORDER BY total_orders DESC
+LIMIT 1;
+
+--
+SELECT pname, amount
+FROM view_supplier_orders
+WHERE sname = 'משאבים לוג';
